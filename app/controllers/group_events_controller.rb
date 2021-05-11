@@ -13,11 +13,12 @@ class GroupEventsController < ApplicationController
 
   def create
     group_event = GroupEvents::CreateEvent.run(create_params)
-    if group_event.valid?
+    if group_event.result&.valid?
       data = { group_event: group_event.result }
       success_response(data)
     else
-      error_response(group_event.errors.messages)
+      errors = group_event.result&.errors&.messages || group_event.errors.messages
+      error_response(errors)
     end
   end
 
